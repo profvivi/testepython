@@ -4,13 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cofre Digital da Família - Projeto Python</title>
-  <!-- Motor PyScript para rodar Python real no navegador -->
-  <link rel="stylesheet" href="https://pyscript.net">
-  <script type="module" src="https://pyscript.net"></script>
 </head>
 <body style="background-color: #f1f5f9; font-family: Arial, sans-serif; margin: 0; padding: 30px 15px; color: #1e293b;">
 
-  <!-- Cartão Principal -->
   <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); overflow: hidden; border: 1px solid #cbd5e1;">
     
     <!-- Cabeçalho Azul -->
@@ -37,135 +33,31 @@
         </ul>
       </div>
 
-      <!-- ÁREA INTERATIVA DO COFRE EM PYTHON -->
-      <div style="margin-top: 28px; padding: 24px; background: #f8fafc; border-radius: 12px; border: 2px solid #93c5fd;">
-        <h2 style="margin-top: 0; text-align: center; color: #1e3a8a; font-size: 20px;">🐍 Use o Cofre Digital Aqui Mesmo</h2>
-        <p style="text-align: center; font-size: 13px; color: #64748b; margin-bottom: 20px;">
-          (Aguarde cerca de 3 segundos na primeira vez para o Python carregar no navegador)
+      <!-- Área do Botão que abre o Google Colab -->
+      <div style="text-align: center; margin-top: 28px; padding: 22px; background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">
+        <p style="margin: 0 0 15px; font-weight: bold; font-size: 16px; color: #1e3a8a;">
+          Pronto para testar o sistema na prática?
         </p>
-
-        <!-- Seção 1: Guardar -->
-        <h3 style="margin: 0 0 10px; font-size: 16px; color: #0f172a;">1. Guardar Informação</h3>
-        <input id="titulo" type="text" placeholder="O que você quer guardar? (Ex: Senha Banco)" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #94a3b8; border-radius:8px; font-size:15px; box-sizing:border-box;">
-        <input id="segredo" type="text" placeholder="Informação secreta (telefone, senha, CPF)" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #94a3b8; border-radius:8px; font-size:15px; box-sizing:border-box;">
-        <input id="senhaCad" type="password" placeholder="Crie uma Senha Mestra para trancar" style="width:100%; padding:12px; margin-bottom:14px; border:1px solid #94a3b8; border-radius:8px; font-size:15px; box-sizing:border-box;">
-
-        <button py-click="salvar_dado" style="width:100%; padding:14px; background:#15803d; color:white; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
-          🔒 TRANCAR NO COFRE
-        </button>
-
-        <hr style="margin: 22px 0; border: 0; border-top: 1px solid #cbd5e1;">
-
-        <!-- Seção 2: Consultar -->
-        <h3 style="margin: 0 0 10px; font-size: 16px; color: #0f172a;">2. Consultar Informação Guardada</h3>
-        <select id="listaItens" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #94a3b8; border-radius:8px; font-size:15px; background:white;">
-          <option value="-1">Cofre vazio</option>
-        </select>
-        <input id="senhaAbrir" type="password" placeholder="Digite a Senha Mestra para destrancar" style="width:100%; padding:12px; margin-bottom:14px; border:1px solid #94a3b8; border-radius:8px; font-size:15px; box-sizing:border-box;">
-
-        <button py-click="abrir_dado" style="width:100%; padding:14px; background:#1d4ed8; color:white; border:none; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
-          🔓 DESTRANCAR ITEM
-        </button>
-
-        <!-- Caixa de Resultado / Alertas -->
-        <div id="caixaResultado" style="display:none; margin-top:18px; padding:14px; border-radius:8px; font-size:15px; line-height:1.5;"></div>
+        
+        <a href="https://google.com" 
+           target="_blank" 
+           style="display: inline-block; background-color: #f9ab00; color: #000000; font-weight: bold; text-decoration: none; padding: 15px 28px; border-radius: 8px; font-size: 17px; box-shadow: 0 4px 6px rgba(0,0,0,0.12);">
+          🚀 Abrir Cofre no Google Colab
+        </a>
+        
+        <p style="margin: 12px 0 0; font-size: 13px; color: #64748b;">
+          Ao abrir o Google Colab, clique no botão <strong>Play (▶)</strong> ao lado do código.
+        </p>
       </div>
 
     </div>
 
     <!-- Rodapé -->
     <div style="background: #f8fafc; padding: 15px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0;">
-      Desenvolvido em Python (PyScript) • Criptografia SHA-256 + XOR
+      Desenvolvido em Python • Criptografia SHA-256 + XOR
     </div>
 
   </div>
-
-  <!-- CÓDIGO PYTHON EXECUTADO DIRETO NO SITE -->
-  <script type="py">
-    import hashlib
-    import base64
-    from pyscript import document
-
-    cofre_memoria = []
-
-    def gerar_chave(senha_mestra):
-        return hashlib.sha256(senha_mestra.encode('utf-8')).digest()
-
-    def criptografar(texto, senha_mestra):
-        chave = gerar_chave(senha_mestra)
-        texto_bytes = texto.encode('utf-8')
-        resultado = bytearray([texto_bytes[i] ^ chave[i % len(chave)] for i in range(len(texto_bytes))])
-        return base64.b64encode(resultado).decode('utf-8')
-
-    def descriptografar(texto_cifrado, senha_mestra):
-        try:
-            chave = gerar_chave(senha_mestra)
-            dados_bytes = base64.b64decode(texto_cifrado.encode('utf-8'))
-            resultado = bytearray([dados_bytes[i] ^ chave[i % len(chave)] for i in range(len(dados_bytes))])
-            return resultado.decode('utf-8')
-        except Exception:
-            return None
-
-    def mostrar_aviso(texto, sucesso=True):
-        caixa = document.getElementById("caixaResultado")
-        caixa.style.display = "block"
-        caixa.innerHTML = texto
-        if sucesso:
-            caixa.style.background = "#dcfce7"
-            caixa.style.color = "#14532d"
-            caixa.style.border = "2px solid #86efac"
-        else:
-            caixa.style.background = "#fee2e2"
-            caixa.style.color = "#7f1d1d"
-            caixa.style.border = "2px solid #fca5a5"
-
-    def atualizar_lista():
-        select = document.getElementById("listaItens")
-        select.innerHTML = ""
-        if not cofre_memoria:
-            select.innerHTML = '<option value="-1">Cofre vazio</option>'
-            return
-        for i, item in enumerate(cofre_memoria):
-            opt = document.createElement("option")
-            opt.value = str(i)
-            opt.textContent = f"🔒 {item['titulo']}"
-            select.appendChild(opt)
-
-    def salvar_dado(event):
-        titulo = document.getElementById("titulo").value.strip()
-        segredo = document.getElementById("segredo").value.strip()
-        senha = document.getElementById("senhaCad").value.strip()
-
-        if not titulo or not segredo or not senha:
-            mostrar_aviso("⚠️ <b>Atenção:</b> Preencha todos os 3 campos antes de trancar!", False)
-            return
-
-        dado_protegido = criptografar(segredo, senha)
-        cofre_memoria.append({"titulo": titulo, "dado": dado_protegido})
-
-        document.getElementById("titulo").value = ""
-        document.getElementById("segredo").value = ""
-        document.getElementById("senhaCad").value = ""
-        atualizar_lista()
-        mostrar_aviso(f"✅ <b>Sucesso:</b> '{titulo}' foi trancado com segurança!", True)
-
-    def abrir_dado(event):
-        indice = int(document.getElementById("listaItens").value)
-        senha = document.getElementById("senhaAbrir").value.strip()
-
-        if indice < 0 or indice >= len(cofre_memoria):
-            mostrar_aviso("⚠️ <b>Atenção:</b> O cofre está vazio.", False)
-            return
-
-        item = cofre_memoria[indice]
-        revelado = descriptografar(item["dado"], senha)
-        document.getElementById("senhaAbrir").value = ""
-
-        if revelado is not None:
-            mostrar_aviso(f"📂 <b>{item['titulo']}:</b><br><span style='font-size:19px; font-weight:bold;'>{revelado}</span>", True)
-        else:
-            mostrar_aviso("❌ <b>Acesso Negado:</b> Senha Mestra incorreta!", False)
-  </script>
 
 </body>
 </html>
